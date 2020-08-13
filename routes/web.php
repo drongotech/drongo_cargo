@@ -16,7 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::middleware(['auth', 'adminauth'])->group(function () {
+    Route::prefix('/code')->group(function () {
+        Route::get('/new', 'products\QRCodeController@openNewQRCodeFormPage')->name('qrcode_new');
+        Route::post('/new', 'products\QRCodeController@generateNewQRCodes')->name('qrcode_generate');
+        Route::get('/list', 'products\QRCodeController@openQRCodeList')->name('qrcode_list');
+    });
+});
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
