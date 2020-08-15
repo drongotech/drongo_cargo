@@ -22,6 +22,11 @@ Route::middleware(['auth', 'adminauth'])->group(function () {
         Route::post('/new', 'products\QRCodeController@generateNewQRCodes')->name('qrcode_generate');
         Route::get('/list', 'products\QRCodeController@openQRCodeList')->name('qrcode_list');
     });
+    Route::prefix('company')->group(function () {
+        Route::get('/new', 'companies\CargoCompanyController@openNewCargoCompanyFormPage')->name('new_cargo_company_form');
+        Route::post('/new', 'companies\CargoCompanyController@addNewCargoCompany')->name('new_cargo_company_form');
+        Route::get('/list', 'companies\CargoCompanyController@viewListCargoCompanies')->name('view_list_cargo_companies');
+    });
 });
 Auth::routes();
 

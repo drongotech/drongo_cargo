@@ -263,8 +263,6 @@
             <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title">Menu</li>
 
-                
-
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="fas fa-user"></i>
@@ -276,6 +274,16 @@
                         <li><a href="/code/list/used">Used codes</a></li>
                         <li><a href="/code/list/delivered">Delivered products</a></li>
                         <li><a href="/code/list/enroute">Enroute products</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fas fa-building"></i>
+                        <span>Cargo Companies</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="/company/list">List companies</a></li>
+                        <li><a href="/company/new">New companies</a></li>
                     </ul>
                 </li>
                 <li>

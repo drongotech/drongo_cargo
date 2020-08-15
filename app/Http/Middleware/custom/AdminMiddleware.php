@@ -41,6 +41,16 @@ class AdminMiddleware
                             $errorMessage = "You are not authorized for generating qrcodes";
                         }
                         break;
+                    case 'new_cargo_company_form':
+                        if ($permissions->admin_companies_permissions < $permissions->perm_write) {
+                            $errorMessage = "You are not authorized for creatig new companies";
+                        }
+                        break;
+                    case 'view_list_cargo_companies':
+                        if ($permissions->admin_companies_permissions < $permissions->perm_read) {
+                            $errorMessage = "You are not authorized to view companies";
+                        }
+                        break;
                     default:
                         $errorMessage = "unknown route name";
                 }
