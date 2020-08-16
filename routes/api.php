@@ -19,8 +19,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/authenticate', 'companies\CargoCompanyController@authenticateCompany');
-
+Route::post('/track', 'companies\CargoShipmentController@getShipmentTrackStatus');
 Route::middleware('companyAuth')->group(function () {
     Route::post('/addShipment', 'companies\CargoShipmentController@addNewShipment');
     Route::post('/addItem', 'companies\CargoShipmentController@addShipmentItem');
+    Route::post('/shipments/delivered', 'companies\CargoShipmentController@getLatestDelievered');
+    Route::post('/track/timestamp', 'companies\CargoShipmentController@getGivenDateShipments');
 });
