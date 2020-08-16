@@ -19,3 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/authenticate', 'companies\CargoCompanyController@authenticateCompany');
+
+Route::middleware('companyAuth')->group(function () {
+    Route::post('/addShipment', 'companies\CargoShipmentController@addNewShipment');
+    Route::post('/addItem', 'companies\CargoShipmentController@addShipmentItem');
+});

@@ -60,7 +60,7 @@ class AdminMiddleware
         }
         if ($user->errorMessage != null)
             $errorMessage = $user->errorMessage;
-        else
+        else if ($errorMessage == null)
             $errorMessage = "You are not authorized for this action";
         if ($request->expectsJson()) {
 

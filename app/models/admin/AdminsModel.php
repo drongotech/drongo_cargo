@@ -15,7 +15,8 @@ class AdminsModel extends Model
         "admin_qrcode_permissions",
         "admin_user_permissions",
         "admin_product_permissions",
-        "admin_tracking_permissions"
+        "admin_tracking_permissions",
+        "admin_companies_permissions",
     ];
 
     public $perm_none = 0;
@@ -35,7 +36,8 @@ class AdminsModel extends Model
                 "admin_qrcode_permissions" => $this->perm_super,
                 "admin_user_permissions" => $this->perm_super,
                 "admin_product_permissions" => $this->perm_super,
-                "admin_tracking_permissions" => $this->perm_super
+                "admin_tracking_permissions" => $this->perm_super,
+                "admin_companies_permissions" => $this->perm_super,
             ]);
         } catch (\Throwable $th) {
             $this->errorMessage = $th->getMessage();
