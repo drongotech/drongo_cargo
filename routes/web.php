@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 Route::middleware(['auth', 'adminauth'])->group(function () {
     Route::prefix('/code')->group(function () {
         Route::get('/new', 'products\QRCodeController@openNewQRCodeFormPage')->name('qrcode_new');
@@ -28,10 +25,16 @@ Route::middleware(['auth', 'adminauth'])->group(function () {
         Route::get('/list', 'companies\CargoCompanyController@viewListCargoCompanies')->name('view_list_cargo_companies');
     });
 });
+
+Route::middleware('compweb')->group(function () {
+
+    Route::get('/', 'companies\CargoCompanyController@openIndexPage')->name('welcome');
+    Route::prefix('/cargo')->group(function () {
+        Route::get('/', 'HomeController@index')->name('home');
+    });
+});
+Route::post('cargo/logout', 'companies\CargoCompanyController@logoutCompany')->name('cargologout');
+Route::post('/cargo/login', 'companies\CargoCompanyController@loginCompany')->name('login_company');
+
+Route::get('/cargo/login', 'companies\CargoCompanyController@loginPage')->name('company_login');
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');

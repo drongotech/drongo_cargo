@@ -11,6 +11,7 @@ class QRCodesModel extends Model
 
     protected $fillable = [
         "qrcode",
+        "qrcode_type",
         "qrcode_image",
         "qrcode_token",
         "qrcode_generated_by",
@@ -18,7 +19,7 @@ class QRCodesModel extends Model
     ];
 
     public $errorMessage = null;
-    public function saveQRCode($image_path, $admin, $code)
+    public function saveQRCode($image_path, $admin, $code, $type = 1)
     {
         try {
             return $this->create([
@@ -26,6 +27,7 @@ class QRCodesModel extends Model
                 "qrcode_image" => $image_path,
                 "qrcode_token" => hash('md5', $this->generateCode()),
                 "qrcode_generated_by" => $admin,
+                "qrcode_type" => $type
             ]);
         } catch (\Throwable $th) {
             $this->errorMessage = $th->getMessage();

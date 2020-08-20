@@ -11,6 +11,7 @@ class ShipmentItemsModel extends Model
 
     protected $fillable = [
         "track_id",
+        "item_tracking_number",
         "item_name",
         "item_number",
         "item_quantity",
@@ -27,6 +28,7 @@ class ShipmentItemsModel extends Model
         try {
             return $this->create([
                 "track_id" => $data["item_track_id"],
+                "item_tracking_number" => $data["item_tracking_number"],
                 "item_name" => $data["item_name"],
                 "item_number" => "DTS_" . $this->getShipCount(),
                 "item_quantity" => $data["item_quantity"],

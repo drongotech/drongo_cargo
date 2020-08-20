@@ -5,9 +5,14 @@ namespace App\Http\Controllers\companies;
 use App\Http\Controllers\Controller;
 use App\models\companies\CargoShipmentModel;
 use App\models\companies\ShipmentItemsModel;
+use App\models\products\QRCodesModel;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Milon\Barcode\DNS1D;
 
 class CargoShipmentController extends Controller
 {
@@ -17,8 +22,8 @@ class CargoShipmentController extends Controller
         $company = $request->company;
 
         $rules = [
-            "tracking_number"  => "required|integer|exists:qrcodes,qrcode|unique:cargo_shipments,tracking_number",
             "customer_name" => "required|string|max:255",
+            "customer_phone" => "required|string|max:255",
             "city_of_origin" => "required|string|max:255",
             "country_of_origin" => "required|string|max:255",
             "destination_city" => "required|string|max:255",
@@ -30,13 +35,32 @@ class CargoShipmentController extends Controller
             return $this->jsonRespnse(false, $validator->errors()->all());
         }
 
-        $ShipmentModel = new CargoShipmentModel();
-        $new_shipment = $ShipmentModel->addNewShipment($validator->validated(), $company);
-        if ($new_shipment) {
-            return $this->jsonRespnse(true, null, $new_shipment);
-        }
+        $data = $validator->validated();
 
-        return $this->jsonRespnse(false, $ShipmentModel->errorMessage);
+        // return $data;
+        try {
+            $d = new DNS1D();
+            $d->setStorPath('/qrcodes/cache/');
+            $QRCodeModel = new QRCodesModel();
+            $code =  $QRCodeModel->generateCode();
+            $image =  base64_decode($d->getBarcodePNG($code, 'C39+', 2, 15));
+            $imageurl = '/qrcodes/cache/qrcode_' . (time()) . '.png';
+            Storage::disk('public')->put($imageurl, $image);
+            $new_qrcode = $QRCodeModel->saveQRCode(env('APP_URL') . '/storage/' . $imageurl, $company->id, $code);
+            if ($new_qrcode == false) {
+                throw new Exception("QR code generation failed " . $QRCodeModel->errorMessage, 1);
+            }
+            $ShipmentModel = new CargoShipmentModel();
+            $data["tracking_number"] = $code;
+            $new_shipment = $ShipmentModel->addNewShipment($data, $company);
+            if ($new_shipment) {
+                return $this->jsonRespnse(true, null, $new_shipment);
+            }
+            return $this->jsonRespnse(false, $ShipmentModel->errorMessage);
+        } catch (\Throwable $th) {
+            return $this->jsonRespnse(false, $th->getMessage());
+            // return Redirect::back()->withErrors(['qr_code_quantity' => $th->getMessage()]);
+        }
     }
 
     public function getLatestDelievered(Request $request)
@@ -63,14 +87,14 @@ class CargoShipmentController extends Controller
         $rules = [
             "item_track_id" => "required|integer|exists:cargo_shipments,id",
             "item_name" => "required|string|max:255",
-            "item_quantity" => "required|numeric",
+            "item_quantity" => "required|numeric|min:1",
             "item_unit" => "required|string|max:30",
             "item_cpm" => "required|numeric",
             "item_remarks" => "required|string|max:255",
             "item_supplier" => "required|string|max:255"
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return $this->jsonRespnse(false, $validator->errors()->all());
@@ -85,16 +109,36 @@ class CargoShipmentController extends Controller
         }
         $shipment = $shipment[0];
 
-        $ItemModel = new ShipmentItemsModel();
-        $new_item = $ItemModel->addNewItem($validator->validated());
-        $shipment->date_created = $shipment->created_at->format('y-m-d');
-        $shipment->date_updated = $shipment->updated_at->format('y-m-d');
-        $shipment->status = $shipment->statusTrack($shipment->track_status);
-        if ($new_item) {
-            $shipment->items;
-            return $this->jsonRespnse(true, null, $shipment);
-        } else {
-            return $this->jsonRespnse(false, $ItemModel->errorMessage);
+
+        try {
+            $d = new DNS1D();
+            $d->setStorPath('/qrcodes/cache/');
+            $QRCodeModel = new QRCodesModel();
+            $code =  $QRCodeModel->generateCode();
+            $image =  base64_decode($d->getBarcodePNG($code, 'C39+', 2, 15));
+            $imageurl = '/qrcodes/cache/qrcode_' . (time()) . '.png';
+            Storage::disk('public')->put($imageurl, $image);
+            $new_qrcode = $QRCodeModel->saveQRCode(env('APP_URL') . '/storage/' . $imageurl, $company->id, $code, 2);
+            if ($new_qrcode == false) {
+                throw new Exception("QR code generation failed " . $QRCodeModel->errorMessage, 1);
+            }
+            $ItemModel = new ShipmentItemsModel();
+            $data = $validator->validated();
+            $data["item_tracking_number"] = $code;
+            $new_item = $ItemModel->addNewItem($data);
+            $shipment->date_created = $shipment->created_at->format('y-m-d');
+            $shipment->date_updated = $shipment->updated_at->format('y-m-d');
+            $shipment->status = $shipment->statusTrack($shipment->track_status);
+            if ($new_item) {
+                $shipment->items;
+                return $this->jsonRespnse(true, null, $shipment);
+            } else {
+                $shipment->delete();
+                return $this->jsonRespnse(false, $ItemModel->errorMessage);
+            }
+        } catch (\Throwable $th) {
+            $shipment->delete();
+            return $this->jsonRespnse(false, $th->getMessage());
         }
     }
 

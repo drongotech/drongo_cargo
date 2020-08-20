@@ -12,6 +12,7 @@ class CargoShipmentModel extends Model
     protected $fillable = [
         "tracking_number",
         "customer_name",
+        "customer_phone",
         "city_of_origin",
         "country_of_origin",
         "destination_city",
@@ -35,6 +36,7 @@ class CargoShipmentModel extends Model
             return  $this->create([
                 "tracking_number" => $data["tracking_number"],
                 "customer_name" => $data["customer_name"],
+                "customer_phone" => $data["customer_phone"],
                 "city_of_origin" => $data["city_of_origin"],
                 "country_of_origin" => $data["country_of_origin"],
                 "destination_city" => $data["destination_city"],

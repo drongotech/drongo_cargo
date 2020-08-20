@@ -8,12 +8,18 @@ use App\Notifications\NewCargoCompanyNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Validator;
 
 class CargoCompanyController extends Controller
 {
     //
+    public function openIndexPage(Request $request)
+    {
+        $company = $request->company;
+        return view('welcome', compact('company'));
+    }
     public function openNewCargoCompanyFormPage(Request $request)
     {
         $user = $request->user();
@@ -29,7 +35,49 @@ class CargoCompanyController extends Controller
         return view('cargo_companies.list_companies', compact('companies'));
     }
 
+    public function loginPage(Request $request)
+    {
+        if ($request->cookie('cc_cookie') != null) {
+            // return 'not logged in';
+            return redirect()->route('welcome');
+        }
+        return view('auth.comp_login');
+    }
+
     //
+
+    public function loginCompany(Request $request)
+    {
+        if ($request->cookie('cc_cookie') != null) {
+            // return 'not logged in';
+            return redirect()->route('welcome');
+        }
+        $rules = [
+            "company_email" => "required|email|max:255",
+            "company_pincode" => "required|string|max:255",
+        ];
+
+
+        $data =  $request->validate($rules);
+        $company = CargoCompanyModel::where([
+            ["company_email", $data["company_email"]]
+        ])->get();
+
+        if ($company == null || $company->count() <= 0) {
+            return Redirect::back()->withErrors(['errorMessage' => "Invalid email or company pincode"]);
+        }
+
+        if (Crypt::decrypt($company[0]->company_pincode) != ($data["company_pincode"])) {
+            return Redirect::back()->withErrors(['errorMessage' => "Invalid company or email pincode "]);
+        }
+
+        // $response = new Response('set cookies');
+        // $response->withCookie(cookie('cc_cookie', $company[0]->company_token, 60 * 24 * 365));
+
+        Cookie::queue('cc_cookie', $company[0]->company_token, 60 * 24 * 365);
+        return redirect()->route('welcome');
+    }
+
     public function addNewCargoCompany(Request $request)
     {
         $user = $request->user();
