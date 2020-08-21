@@ -261,17 +261,20 @@
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
+                
                 <li class="menu-title">Menu</li>
-
+                <li class="menu-item">
+                    
+                    <a href="/"><i class="fas fa-home"></i>Dashboard</a>
+                </li>
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="fas fa-ship"></i>
                         <span>Shipments</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="/code/new">New Shipment</a></li>
-                        <li><a href="/code/new">Today's shipments</a></li>
-                        <li><a href="/code/new">Delivered shipments</a></li>
+                        <li><a href="/cargo/shipments">Latest Shipments</a></li>
+                        <li><a href="/cargo/shipments/delivered">Delivered shipments</a></li>
                     </ul>
                 </li>
 

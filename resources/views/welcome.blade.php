@@ -122,7 +122,7 @@
 <div class="row">
     <div class="card col-md-10 col-lg-10">
         <div class="card-header bg-primary text-white">
-            Latest shipments
+            Today's shipments
         </div>
         <div class="card-body">
             <table class="table">
@@ -132,11 +132,27 @@
                             #
                         </th>
                         <th>Tracking number</th>
-                        <th>Customer</th>
-                        <th>Item</th>
-                        <th>Quantity</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Items</th>
                         <th>Date</th>
                     </tr>
+                    <tbody>
+                        @foreach ($latest_shipments as $shipment)
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <a href="/cargo/shipments/{{$shipment->id}}/{{$shipment->tracking_number}}">
+                                        {{$shipment->tracking_number}}
+                                    </a>
+                                </td>
+                                <td>{{$shipment->customer_name}}</td>
+                                <td>{{$shipment->customer_phone}}</td>
+                                <td>{{$shipment->items->count()}}</td>
+                                <td>{{$shipment->created_at}}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
                 </thead>
             </table>
         </div>

@@ -31,6 +31,10 @@ Route::middleware('compweb')->group(function () {
     Route::get('/', 'companies\CargoCompanyController@openIndexPage')->name('welcome');
     Route::prefix('/cargo')->group(function () {
         Route::get('/', 'HomeController@index')->name('home');
+        Route::get('/shipments', 'companies\CargoShipmentController@latestShipmentsView');
+        Route::get('/shipments/delivered', 'companies\CargoShipmentController@deliveredtShipmentsView');
+        Route::get('/shipments/{id}/{tracking_number}', 'companies\CargoShipmentController@getShipmentDetails');
+        Route::get('/shipments/view/{id}/{tracking_number}', 'companies\CargoShipmentController@viewShipmentDetails');
     });
 });
 Route::post('cargo/logout', 'companies\CargoCompanyController@logoutCompany')->name('cargologout');

@@ -2,6 +2,7 @@
 
 namespace App\models\companies;
 
+use App\models\products\QRCodesModel;
 use Illuminate\Database\Eloquent\Model;
 
 class CargoShipmentModel extends Model
@@ -71,5 +72,10 @@ class CargoShipmentModel extends Model
                 "status" => $this->track_status,
             ];
         }
+    }
+
+    public function qrcode()
+    {
+        return $this->hasOne(QRCodesModel::class, 'qrcode', 'tracking_number');
     }
 }

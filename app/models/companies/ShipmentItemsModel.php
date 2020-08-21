@@ -2,6 +2,7 @@
 
 namespace App\models\companies;
 
+use App\models\products\QRCodesModel;
 use Illuminate\Database\Eloquent\Model;
 
 class ShipmentItemsModel extends Model
@@ -47,5 +48,10 @@ class ShipmentItemsModel extends Model
     public function getShipCount()
     {
         return $this->all()->count();
+    }
+
+    public function qrcode()
+    {
+        return $this->hasOne(QRCodesModel::class, 'qrcode', 'item_tracking_number');
     }
 }

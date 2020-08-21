@@ -23,6 +23,12 @@ Route::post('/track', 'companies\CargoShipmentController@getShipmentTrackStatus'
 Route::middleware('companyAuth')->group(function () {
     Route::post('/addShipment', 'companies\CargoShipmentController@addNewShipment');
     Route::post('/addItem', 'companies\CargoShipmentController@addShipmentItem');
+    Route::post('/shipments/today', 'companies\CargoShipmentController@getTodaysItems');
+    Route::post('/shipments/pdf/today', 'companies\CargoShipmentController@getTodaysItemsPDF');
+    Route::post('/shipments/latest', 'companies\CargoShipmentController@getLatestItems');
     Route::post('/shipments/delivered', 'companies\CargoShipmentController@getLatestDelievered');
     Route::post('/track/timestamp', 'companies\CargoShipmentController@getGivenDateShipments');
 });
+
+Route::post('/update', 'companies\CargoShipmentController@getItemWithTrackingNumber');
+Route::post('/update/{status}', 'companies\TrackingStatusController@updateStatus');

@@ -6,17 +6,176 @@ use App\Http\Controllers\Controller;
 use App\models\companies\CargoShipmentModel;
 use App\models\companies\ShipmentItemsModel;
 use App\models\products\QRCodesModel;
+use Carbon\Carbon;
 use Exception;
+use Facade\FlareClient\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View as FacadesView;
 use Milon\Barcode\DNS1D;
+use Mpdf\Mpdf;
 
 class CargoShipmentController extends Controller
 {
+    public function getItemWithTrackingNumber(Request $request)
+    {
+        $shipment = CargoShipmentModel::where([
+            ["tracking_number", $request->tracking_number]
+        ])->get();
+        if ($shipment == null || $shipment->count() <= 0)
+            return $this->jsonRespnse(false, "There is no shipment with the given tracking number");
+
+        $shipment = $shipment[0];
+        $shipment->date_created = $shipment->created_at->format('y-m-d');
+        $shipment->date_updated = $shipment->updated_at->format('y-m-d');
+        $shipment->items;
+        $shipment->status = $shipment->statusTrack($shipment->track_status);
+        return $this->jsonRespnse(true, null, $shipment);
+    }
+    public function getShipmentDetails(Request $request, $id, $tracking_number)
+    {
+        $company = $request->company;
+        $shipment = CargoShipmentModel::where([
+            ["id", $id],
+            ["tracking_number", $tracking_number]
+        ])->get();
+
+        if ($shipment == null || $shipment->count() <= 0) {
+            abort(404);
+        }
+
+        $shipment = $shipment[0];
+        if ($shipment->company_id != $company->id)
+            abort(403);
+
+        // $mpdf = new Mpdf(['tempDir' => public_path() . '/storage/uploads/items/' . $company->company_token]);
+        // $html = view('cargo_companies.view_shipment', compact('shipment', 'company'))->render();
+        // // $html = FacadesView::make('cargo_companies.view_shipment', ['company' => $company, 'shipment' => $shipment])->render();
+        // $path = public_path() . '/storage/uploads/items/' . $company->company_token . '/item_qrcodes.pdf';
+        // $mpdf->WriteHTML($html);
+        // $mpdf->Output($path, 'F');
+
+        return view('cargo_companies.shipment_details', compact('shipment', 'company'));
+    }
+
+    public function latestShipmentsView(Request $request)
+    {
+        $company = $request->company;
+        $shipments = CargoShipmentModel::where([
+            ["company_id", $company->id],
+            ["company_token", $company->company_token]
+        ])->get();
+
+        return view('cargo_companies.latest_shipments', compact('shipments', 'company'));
+    }
+    public function deliveredtShipmentsView(Request $request)
+    {
+        $company = $request->company;
+        $shipments = CargoShipmentModel::where([
+            ["company_id", $company->id],
+            ["company_token", $company->company_token],
+            ["track_status", 80], //delivered status
+        ])->get();
+
+        return view('cargo_companies.delivered_shipments', compact('shipments', 'company'));
+    }
+    public function viewShipmentDetails(Request $request, $id, $tracking_number)
+    {
+        $company = $request->company;
+        $shipment = CargoShipmentModel::where([
+            ["id", $id],
+            ["tracking_number", $tracking_number]
+        ])->get();
+
+        if ($shipment == null || $shipment->count() <= 0) {
+            abort(404);
+        }
+
+        $shipment = $shipment[0];
+        if ($shipment->company_id != $company->id)
+            abort(403);
+
+        // $mpdf = new Mpdf();
+
+
+        return view('cargo_companies.view_shipment', compact('shipment', 'company'));
+    }
+    public function latestShipments(Request $request)
+    {
+        $company = $request->company;
+        $one_month = Carbon::now()->subMonth();
+        $latest_shipments = CargoShipmentModel::where([
+            ["created_at", ">=", $one_month],
+            ["company_id", $company->id],
+            ["company_token", $company->company_token]
+        ])->whereHas('items')->latest()->get();
+    }
     //
+
+    public function getTodaysItems(Request $request)
+    {
+        $company = $request->company;
+        $one_day = Carbon::now()->subDay();
+        $shipments = CargoShipmentModel::where([
+            ["company_id", $company->id],
+            ["company_token", $company->company_token],
+            ["created_at", ">=", $one_day]
+        ])->latest()->get();
+        foreach ($shipments as $key => $shipment) {
+            $shipments[$key]->date_created = $shipment->created_at->format('y-m-d');
+            $shipments[$key]->date_updated = $shipment->updated_at->format('y-m-d');
+            $shipment->items;
+            $shipments[$key]->status = $shipment->statusTrack($shipment->track_status);
+        }
+        return $this->jsonRespnse(true, null, $shipments);
+    }
+
+    public function getTodaysItemsPDF(Request $request)
+    {
+        $company = $request->company;
+        $one_day = Carbon::now()->subDay();
+        $shipments = CargoShipmentModel::where([
+            ["company_id", $company->id],
+            ["company_token", $company->company_token],
+            ["created_at", ">=", $one_day]
+        ])->latest()->get();
+        // return $shipments;
+        foreach ($shipments as $key => $shipment) {
+            $shipments[$key]->date_created = $shipment->created_at->format('y-m-d');
+            $shipments[$key]->date_updated = $shipment->updated_at->format('y-m-d');
+            $shipment->items;
+            $shipments[$key]->status = $shipment->statusTrack($shipment->track_status);
+        }
+        $path =  'storage/uploads/items/today/' . $company->company_token . '/';
+        $mpdf = new Mpdf(["tempDir" => $path]);
+
+        $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments'))->render());
+        $mpdf->Output($path . 'item_shipments.pdf', \Mpdf\Output\Destination::FILE);
+
+        $data = ["url" => env('APP_URL') . $path . 'item_shipments.pdf'];
+        return $this->jsonRespnse(true, null, $data);
+    }
+
+    public function getLatestItems(Request $request)
+    {
+        $company = $request->company;
+        $one_day = Carbon::now()->subDay();
+        $shipments = CargoShipmentModel::where([
+            ["company_id", $company->id],
+            ["company_token", $company->company_token],
+            ["track_status", "!=", 80]
+        ])->latest()->get();
+        foreach ($shipments as $key => $shipment) {
+            $shipments[$key]->date_created = $shipment->created_at->format('y-m-d');
+            $shipments[$key]->date_updated = $shipment->updated_at->format('y-m-d');
+            $shipment->items;
+            $shipments[$key]->status = $shipment->statusTrack($shipment->track_status);
+        }
+        return $this->jsonRespnse(true, null, $shipments);
+    }
     public function addNewShipment(Request $request)
     {
         $company = $request->company;
@@ -43,7 +202,7 @@ class CargoShipmentController extends Controller
             $d->setStorPath('/qrcodes/cache/');
             $QRCodeModel = new QRCodesModel();
             $code =  $QRCodeModel->generateCode();
-            $image =  base64_decode($d->getBarcodePNG($code, 'C39+', 2, 15));
+            $image =  base64_decode($d->getBarcodePNG($code, 'C39+', 1, 45));
             $imageurl = '/qrcodes/cache/qrcode_' . (time()) . '.png';
             Storage::disk('public')->put($imageurl, $image);
             $new_qrcode = $QRCodeModel->saveQRCode(env('APP_URL') . '/storage/' . $imageurl, $company->id, $code);
@@ -69,7 +228,8 @@ class CargoShipmentController extends Controller
 
         $shipments = CargoShipmentModel::where([
             ["company_token", $company->company_token],
-            ["company_id", $company->id]
+            ["company_id", $company->id],
+            ["track_status", 80]
         ])->get();
         foreach ($shipments as $key => $shipment) {
             $shipments[$key]->date_created = $shipment->created_at->format('y-m-d');
@@ -115,7 +275,7 @@ class CargoShipmentController extends Controller
             $d->setStorPath('/qrcodes/cache/');
             $QRCodeModel = new QRCodesModel();
             $code =  $QRCodeModel->generateCode();
-            $image =  base64_decode($d->getBarcodePNG($code, 'C39+', 2, 15));
+            $image =  base64_decode($d->getBarcodePNG($code, 'C39+', 1, 45));
             $imageurl = '/qrcodes/cache/qrcode_' . (time()) . '.png';
             Storage::disk('public')->put($imageurl, $image);
             $new_qrcode = $QRCodeModel->saveQRCode(env('APP_URL') . '/storage/' . $imageurl, $company->id, $code, 2);

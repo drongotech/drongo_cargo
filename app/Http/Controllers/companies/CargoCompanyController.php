@@ -4,12 +4,15 @@ namespace App\Http\Controllers\companies;
 
 use App\Http\Controllers\Controller;
 use App\models\companies\CargoCompanyModel;
+use App\models\companies\CargoShipmentModel;
 use App\Notifications\NewCargoCompanyNotification;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Response as FacadesResponse;
 use Illuminate\Support\Facades\Validator;
 
 class CargoCompanyController extends Controller
@@ -18,7 +21,13 @@ class CargoCompanyController extends Controller
     public function openIndexPage(Request $request)
     {
         $company = $request->company;
-        return view('welcome', compact('company'));
+        $one_day = Carbon::now()->subDay();
+        $latest_shipments = CargoShipmentModel::where([
+            ["created_at", ">=", $one_day],
+            ["company_id", $company->id],
+            ["company_token", $company->company_token]
+        ])->whereHas('items')->latest()->get();
+        return view('welcome', compact('company', 'latest_shipments'));
     }
     public function openNewCargoCompanyFormPage(Request $request)
     {
@@ -138,7 +147,7 @@ class CargoCompanyController extends Controller
 
     public function jsonRespnse($status, $errorMessage, $data = [])
     {
-        return Response::json([
+        return FacadesResponse::json([
             "isSuccess" => $status,
             "errorMessage" => $errorMessage,
             "data" => $data,
