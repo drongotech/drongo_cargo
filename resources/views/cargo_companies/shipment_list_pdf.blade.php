@@ -112,6 +112,10 @@
                 To:
 
             </th>
+            <th style="text-align: left; padding:10px;">
+                Tracking number:
+
+            </th>
 
         </tr>
         <tbody class="tbodyCustomer">
@@ -123,10 +127,13 @@
                     {{$shipment->customer_phone}}
                 </td>
                 <td style="text-align: left; padding:10px;">
-                    {{$shipment->city_of_origin}}, {{$shipment->country_of_country}}
+                    {{$shipment->city_of_origin}}, {{$shipment->country_of_origin}}
                 </td>
                 <td style="text-align: left; padding:10px;">
                     {{$shipment->destination_city}}, {{$shipment->destination_country}}
+                </td>
+                <td style="text-align: left; padding:10px;">
+                    {{$shipment->tracking_number}}
                 </td>
             </tr>
         </tbody>
@@ -179,23 +186,26 @@
         </tr>
         @foreach ($items as $item)
         <tbody class="tbodyItem">
-            <tr>
-                <td style="text-align: left; padding:10px;">
+            <tr style="border-bottom: thin solid grey">
+                <td style="text-align: left; padding:10px;border-bottom: thin solid grey">
                     {{$item->item_unit}}
                 </td>
-                <td style="text-align: left; padding:10px;">
-                    {{$item->item_name}}
+                <td style="text-align: left; padding:10px;border-bottom: thin solid grey">
+                    {{$item->item_tracking_number}} 
+                    <div style="margin-top:10px">
+                        {{$item->item_name}} 
+                    </div>
                 </td>
-                <td style="text-align: left; padding:10px;">
+                <td style="text-align: left; padding:10px;border-bottom: thin solid grey">
                     {{$item->item_quantity}}
                 </td>
-                <td>
+                <td style="text-align: left; padding:10px;border-bottom: thin solid grey">
                     {{$item->item_cpm}}
                 </td>
-                <td style="text-align: left; padding:10px;">
+                <td style="text-align: left; padding:10px;border-bottom: thin solid grey">
                     {{$item->item_supplier}}
                 </td>
-                <td style="text-align: left; padding:10px;">
+                <td style="text-align: left; padding:10px;border-bottom: thin solid grey">
                     {{$item->item_remarks}}
                 </td>
 
