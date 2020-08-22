@@ -24,6 +24,9 @@ Route::middleware(['auth', 'adminauth'])->group(function () {
         Route::post('/new', 'companies\CargoCompanyController@addNewCargoCompany')->name('new_cargo_company_form');
         Route::get('/list', 'companies\CargoCompanyController@viewListCargoCompanies')->name('view_list_cargo_companies');
     });
+    Route::get('/home', function () {
+        return view('dashboard');
+    })->name('home_page');
 });
 
 Route::middleware('compweb')->group(function () {

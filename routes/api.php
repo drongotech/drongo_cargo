@@ -25,6 +25,7 @@ Route::middleware('companyAuth')->group(function () {
     Route::post('/addItem', 'companies\CargoShipmentController@addShipmentItem');
     Route::post('/shipments/today', 'companies\CargoShipmentController@getTodaysItems');
     Route::post('/shipments/pdf/today', 'companies\CargoShipmentController@getTodaysItemsPDF');
+    Route::post('/shipments/pdf/latest', 'companies\CargoShipmentController@getLatestItemsPDF');
     Route::post('/shipments/latest', 'companies\CargoShipmentController@getLatestItems');
     Route::post('/shipments/delivered', 'companies\CargoShipmentController@getLatestDelievered');
     Route::post('/track/timestamp', 'companies\CargoShipmentController@getGivenDateShipments');

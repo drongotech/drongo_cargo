@@ -51,6 +51,9 @@ class AdminMiddleware
                             $errorMessage = "You are not authorized to view companies";
                         }
                         break;
+                    case 'home_page':
+                        return $next($request);
+                        break;
                     default:
                         $errorMessage = "unknown route name";
                 }

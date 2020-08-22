@@ -9,6 +9,7 @@ class TrackingStatusModel extends Model
     //
     protected $table = 'tracking_status';
     protected $fillable = [
+        "tracking_number",
         "status",
         "loading_port",
         "container_number",
@@ -18,10 +19,11 @@ class TrackingStatusModel extends Model
 
     public $errorMessage = null;
 
-    public function updateStatus($status, $onport = null, $container = null, $offport, $deliveredby)
+    public function updateStatus($tn, $status, $onport = null, $container = null, $offport, $deliveredby)
     {
         try {
             return $this->create([
+                "tracking_number" => $tn,
                 "status" => $status,
                 "loading_port" => $onport,
                 "container_number" => $container,

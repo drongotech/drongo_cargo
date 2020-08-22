@@ -15,6 +15,7 @@ class CreateTrackingStatusTable extends Migration
     {
         Schema::create('tracking_status', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('tracking_number');
             $table->integer('status');
             $table->string('loading_port')->nullable();
             $table->string('container_number')->nullable();

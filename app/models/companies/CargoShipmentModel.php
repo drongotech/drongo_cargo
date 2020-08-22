@@ -62,16 +62,52 @@ class CargoShipmentModel extends Model
         if ($status == $this->status_received) {
             return [
                 "status_string" => "Recieved",
-                "status_date" => $this->created_at->format('Y-m-d'),
+                "status_date" => $this->updated_at->format('Y-m-d'),
+                "status" => $this->track_status,
+            ];
+        } else if ($status == $this->status_loaded) {
+            return [
+                "status_string" => "Loaded",
+                "port" => $this->shipmentStatus->where('status', $status)->last()->loading_port,
+                "loaded_port" => $this->shipmentStatus->where('status', $status)->last()->loading_port,
+                "container" => $this->shipmentStatus->where('status', $status)->last()->container_number,
+                "status_date" => $this->updated_at->format('Y-m-d'),
+                "loaded_date" => $this->updated_at->format('Y-m-d'),
+                "status" => $this->track_status,
+            ];
+        } else if ($status == $this->status_offloaded) {
+            return [
+                "status_string" => "offloaded",
+                "port" => $this->shipmentStatus->where('status', $status)->last()->offloaded_port,
+                "loaded_port" => $this->shipmentStatus->where('status', $this->status_loaded)->last()->loading_port,
+                "offloaded_port" => $this->shipmentStatus->where('status', $status)->last()->offloaded_port,
+                "status_date" => $this->updated_at->format('Y-m-d'),
+                "offloaded_date" => $this->updated_at->format('Y-m-d'),
+                "loaded_date" => $this->shipmentStatus->where('status', $this->status_loaded)->last()->created_at->format('Y-m-d'),
+                "status" => $this->track_status,
+            ];
+        } else if ($status == $this->status_delivered) {
+            return [
+                "status_string" => "Delivered",
+                "by" => $this->shipmentStatus->where('status', $status)->last()->delivered_by,
+                "loaded_port" => $this->shipmentStatus->where('status', $this->status_loaded)->last()->loading_port,
+                "offloaded_port" => $this->shipmentStatus->where('status', $this->status_offloaded)->last()->offloaded_port,
+                "loaded_date" => $this->shipmentStatus->where('status', $this->status_loaded)->last()->created_at->format('Y-m-d'),
+                "offloaded_date" => $this->shipmentStatus->where('status', $this->status_offloaded)->last()->created_at->format('Y-m-d'),
+                "status_date" => $this->updated_at->format('Y-m-d'),
                 "status" => $this->track_status,
             ];
         } else {
             return [
-                "track_status" => "Unknown",
-                "status_date" => $this->created_at->format('Y-m-d'),
+                "status_string" => "Unknown",
+                "status_date" => $this->updated_at->format('Y-m-d'),
                 "status" => $this->track_status,
             ];
         }
+    }
+    public function shipmentStatus()
+    {
+        return $this->hasMany(TrackingStatusModel::class, 'tracking_number', 'tracking_number');
     }
 
     public function qrcode()

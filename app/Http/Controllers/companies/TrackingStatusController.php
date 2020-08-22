@@ -55,6 +55,7 @@ class TrackingStatusController extends Controller
 
         $TrackerModel = new TrackingStatusModel();
         $new_status = $TrackerModel->updateStatus(
+            $request->tracking_number,
             $status,
             $request->loaded_port,
             $request->container_number,

@@ -159,6 +159,32 @@ class CargoShipmentController extends Controller
         return $this->jsonRespnse(true, null, $data);
     }
 
+    public function getLatestItemsPDF(Request $request)
+    {
+        $company = $request->company;
+        $one_day = Carbon::now()->subDay();
+        $shipments = CargoShipmentModel::where([
+            ["company_id", $company->id],
+            ["company_token", $company->company_token],
+            ["track_status", "!=", 80]
+        ])->latest()->get();
+        // return $shipments;
+        foreach ($shipments as $key => $shipment) {
+            $shipments[$key]->date_created = $shipment->created_at->format('y-m-d');
+            $shipments[$key]->date_updated = $shipment->updated_at->format('y-m-d');
+            $shipment->items;
+            $shipments[$key]->status = $shipment->statusTrack($shipment->track_status);
+        }
+        $path =  'storage/uploads/items/today/' . $company->company_token . '/';
+        $mpdf = new Mpdf(["tempDir" => $path]);
+
+        $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments'))->render());
+        $mpdf->Output($path . 'item_shipments.pdf', \Mpdf\Output\Destination::FILE);
+
+        $data = ["url" => env('APP_URL') . $path . 'item_shipments.pdf'];
+        return $this->jsonRespnse(true, null, $data);
+    }
+
     public function getLatestItems(Request $request)
     {
         $company = $request->company;
