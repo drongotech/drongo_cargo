@@ -27,7 +27,8 @@ class QRCodesModel extends Model
                 "qrcode_image" => $image_path,
                 "qrcode_token" => hash('md5', $this->generateCode()),
                 "qrcode_generated_by" => $admin,
-                "qrcode_type" => $type
+                "qrcode_type" => $type,
+                "qrcode_used" => true,
             ]);
         } catch (\Throwable $th) {
             $this->errorMessage = $th->getMessage();
