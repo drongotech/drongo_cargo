@@ -51,12 +51,6 @@ class CargoShipmentController extends Controller
         if ($shipment->company_id != $company->id)
             abort(403);
 
-        // $mpdf = new Mpdf(['tempDir' => public_path() . '/storage/uploads/items/' . $company->company_token]);
-        // $html = view('cargo_companies.view_shipment', compact('shipment', 'company'))->render();
-        // // $html = FacadesView::make('cargo_companies.view_shipment', ['company' => $company, 'shipment' => $shipment])->render();
-        // $path = public_path() . '/storage/uploads/items/' . $company->company_token . '/item_qrcodes.pdf';
-        // $mpdf->WriteHTML($html);
-        // $mpdf->Output($path, 'F');
 
         return view('cargo_companies.shipment_details', compact('shipment', 'company'));
     }
@@ -153,11 +147,11 @@ class CargoShipmentController extends Controller
         }
         $path =  'storage/uploads/items/today/' . $company->company_token . '/';
         $mpdf = new Mpdf(["tempDir" => $path]);
-
+        $filename = "item_" . time() . "_shipments.pdf";
         $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments'))->render());
-        $mpdf->Output($path . 'item_shipments.pdf', \Mpdf\Output\Destination::FILE);
+        $mpdf->Output($path . $filename, \Mpdf\Output\Destination::FILE);
 
-        $data = ["url" => env('APP_URL') . $path . 'item_shipments.pdf'];
+        $data = ["url" => env('APP_URL') . $path . $filename];
         return $this->jsonRespnse(true, null, $data);
     }
 
@@ -182,10 +176,11 @@ class CargoShipmentController extends Controller
         $path =  'storage/uploads/items/today/' . $company->company_token . '/';
         $mpdf = new Mpdf(["tempDir" => $path]);
 
+        $filename = "item_" . time() . "_shipments.pdf";
         $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments'))->render());
-        $mpdf->Output($path . 'item_shipments.pdf', \Mpdf\Output\Destination::FILE);
+        $mpdf->Output($path . $filename, \Mpdf\Output\Destination::FILE);
 
-        $data = ["url" => env('APP_URL') . $path . 'item_shipments.pdf'];
+        $data = ["url" => env('APP_URL') . $path . $filename];
         return $this->jsonRespnse(true, null, $data);
     }
 
@@ -210,10 +205,11 @@ class CargoShipmentController extends Controller
         $path =  'storage/uploads/items/today/' . $company->company_token . '/';
         $mpdf = new Mpdf(["tempDir" => $path]);
 
+        $filename = "item_" . time() . "_shipments.pdf";
         $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments'))->render());
-        $mpdf->Output($path . 'item_shipments.pdf', \Mpdf\Output\Destination::FILE);
+        $mpdf->Output($path . $filename, \Mpdf\Output\Destination::FILE);
 
-        $data = ["url" => env('APP_URL') . $path . 'item_shipments.pdf'];
+        $data = ["url" => env('APP_URL') . $path . $filename];
         return $this->jsonRespnse(true, null, $data);
     }
 
@@ -260,7 +256,7 @@ class CargoShipmentController extends Controller
             $d->setStorPath('/qrcodes/cache/');
             $QRCodeModel = new QRCodesModel();
             $code =  $QRCodeModel->generateCode();
-            $image =  base64_decode($d->getBarcodePNG($code, 'C39+', 1, 45));
+            $image =  base64_decode($d->getBarcodePNG($code, 'C39', 1, 45));
             $imageurl = '/qrcodes/cache/qrcode_' . (time()) . '.png';
             Storage::disk('public')->put($imageurl, $image);
             $new_qrcode = $QRCodeModel->saveQRCode(env('APP_URL') . '/storage/' . $imageurl, $company->id, $code);
@@ -333,7 +329,7 @@ class CargoShipmentController extends Controller
             $d->setStorPath('/qrcodes/cache/');
             $QRCodeModel = new QRCodesModel();
             $code =  $QRCodeModel->generateCode();
-            $image =  base64_decode($d->getBarcodePNG($code, 'C39+', 1, 45));
+            $image =  base64_decode($d->getBarcodePNG($code, 'C39', 1, 45));
             $imageurl = '/qrcodes/cache/qrcode_' . (time()) . '.png';
             Storage::disk('public')->put($imageurl, $image);
             $new_qrcode = $QRCodeModel->saveQRCode(env('APP_URL') . '/storage/' . $imageurl, $company->id, $code, 2);
