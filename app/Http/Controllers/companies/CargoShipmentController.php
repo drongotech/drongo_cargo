@@ -148,7 +148,7 @@ class CargoShipmentController extends Controller
         $path =  'storage/uploads/items/today/' . $company->company_token . '/';
         $mpdf = new Mpdf(["tempDir" => $path]);
         $filename = "item_" . time() . "_shipments.pdf";
-        $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments'))->render());
+        $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments', 'company'))->render());
         $mpdf->Output($path . $filename, \Mpdf\Output\Destination::FILE);
 
         $data = ["url" => env('APP_URL') . $path . $filename];
@@ -177,7 +177,7 @@ class CargoShipmentController extends Controller
         $mpdf = new Mpdf(["tempDir" => $path]);
 
         $filename = "item_" . time() . "_shipments.pdf";
-        $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments'))->render());
+        $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments', 'company'))->render());
         $mpdf->Output($path . $filename, \Mpdf\Output\Destination::FILE);
 
         $data = ["url" => env('APP_URL') . $path . $filename];
@@ -206,7 +206,7 @@ class CargoShipmentController extends Controller
         $mpdf = new Mpdf(["tempDir" => $path]);
 
         $filename = "item_" . time() . "_shipments.pdf";
-        $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments'))->render());
+        $mpdf->WriteHTML($html = view('cargo_companies.shipment_list_pdf', compact('shipments', 'company'))->render());
         $mpdf->Output($path . $filename, \Mpdf\Output\Destination::FILE);
 
         $data = ["url" => env('APP_URL') . $path . $filename];

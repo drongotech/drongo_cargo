@@ -77,12 +77,12 @@
 <body>
     <div>
         <h3>
-            Iley Cargo Company
+            {{$company->company_name}}
         </h3>
     </div>
     <div>
         <div style="margin-top: 10px;">
-            Located at : Guanzhou, China
+            Located at : {{$company->company_location}},{{$company->getCountryName()}}
         </div>
 
 
@@ -219,6 +219,7 @@
     @endforeach
 
     <footer class="footerNote">
+        <img src="/assets/images/drongoLogo.png" height="60" alt="">
         Generated from Drongo Technology Cargo System
     </footer>
 
