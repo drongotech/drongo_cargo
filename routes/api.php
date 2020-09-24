@@ -34,3 +34,6 @@ Route::middleware('companyAuth')->group(function () {
 
 Route::post('/update', 'companies\CargoShipmentController@getItemWithTrackingNumber');
 Route::post('/update/{status}', 'companies\TrackingStatusController@updateStatus');
+
+Route::post('/staff/authenticate', 'companies\CompanyStaffController@AuthenticatedStaff');
+Route::post('/list/company', 'companies\CargoCompanyController@CargoCompaniesList');

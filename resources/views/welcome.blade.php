@@ -65,8 +65,9 @@
                         <th> unit</th>
                         <th> name</th>
                         <th> quantity</th>
-                        <th> CPM</th>
-                        <th> supplier</th>
+                        <th> CPM/KG</th>
+                        <th>Total</th>
+                        <th>Supplier</th>
                     </thead>
                     <tbody>
                         <tr v-for="(item,ikey) in Shipment.items" :key="ikey">
@@ -76,7 +77,8 @@
                             </td>
                             <td v-text="item.item_name"></td>
                             <td v-text="item.item_quantity"></td>
-                            <td v-text="item.item_cpm"></td>
+                            <td v-text="item.item_cpm+'/'+item.item_kgs"></td>
+                            <td v-text="item.item_item_total"></td>
                             <td v-text="item.item_supplier"></td>
                         </tr>
                     </tbody>
@@ -97,12 +99,23 @@
             <div class="row">
                 <div class="form-group col-md-6 col-lg-6">
                     <label for="">Item CPM</label>
-                    <input type="text" placeholder="Item cpnm" class="form-control" name="item_cpm"
+                    <input type="text" placeholder="Item cpm" class="form-control" name="item_cpm"
                     v-model="ItemForm.item_cpm">
                 </div><div class="form-group col-md-6 col-lg-6">
                     <label for="">Item Supplier</label>
                     <input type="text" placeholder="Item supplier" class="form-control" name="item_supplier"
                     v-model="ItemForm.item_supplier">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 col-lg-6">
+                    <label for="">Item Kgs</label>
+                    <input type="text" placeholder="Item Kgs" class="form-control" name="item_kgs"
+                    v-model="ItemForm.item_kgs">
+                </div><div class="form-group col-md-6 col-lg-6">
+                    <label for="">Item Total</label>
+                    <input type="text" placeholder="Item supplier" class="form-control" name="item_total"
+                    v-model="ItemForm.item_item_total">
                 </div>
             </div>
             <div class="row">
@@ -173,6 +186,9 @@
 <script>
     window.company_token = "{{$company->company_token}}";
     window.company_id = "{{$company->id}}";
+    window.host_type = "{{isset($staff) ? 2 : 1}}"
+    window.staff_id = "{{isset($staff) ? $staff->id : null}}" 
+    window.staff_email = "{{isset($staff) ? $staff->staff_email : null}}" 
 </script>
 <script src={{"/js/newshipment.js?".$hash}}></script>
 @endsection

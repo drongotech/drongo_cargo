@@ -19,6 +19,8 @@ class ShipmentItemsModel extends Model
         "item_unit",
         "item_cpm",
         "item_supplier",
+        "item_kgs",
+        "item_total",
         "item_remarks",
     ];
 
@@ -37,6 +39,8 @@ class ShipmentItemsModel extends Model
                 "item_cpm" => $data["item_cpm"],
                 "item_supplier" => $data["item_supplier"],
                 "item_remarks" => $data["item_remarks"],
+                "item_kgs" => isset($data['item_kgs']) ? $data["item_kgs"] : 0,
+                "item_total" => $data["item_total"]
 
             ]);
         } catch (\Throwable $th) {

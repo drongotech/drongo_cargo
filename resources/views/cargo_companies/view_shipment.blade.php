@@ -28,31 +28,33 @@
         $items = $shipment->items;
         @endphp
         <div class="row">
-            <div class="col-md-4 col-lg-4"></div>
-            <div class="col-md-4 col-lg-4">
+            {{-- <div class="col-md-4 col-lg-4"></div> --}}
+            <div class="col-md-12 col-lg-12" >
+                {{-- <div class="row"> --}}
+                @foreach ($items as $item)
+
                 <div class="row">
-                    @foreach ($items as $item)
-                    <div class="card">
-                        <div class="card-header">
+                    <div class="card" style="width:100%">
+                        <div class="card-header font-size-24">
                             Shipment qrcode
                         </div>
                         <div class="card-body">
                             <div class="row text-center">
-                                <div class="card">
-                                    <div class="card-header text-dark text-center">
+                                <div class="card" style="width: 100%">
+                                    <div class="card-header text-dark text-center font-size-24">
                                         {{$company->company_name}}
                                     </div>
                                     <div class="card-body text-center">
-                                        <div class="row text-dark text-center mb-3">
-                                           <i class="fas fa-list-ol mr-3"></i>
+                                        <div class="row text-dark text-center mb-3 font-size-24">
+                                            <i class="fas fa-list-ol mr-3"></i>
                                             {{$shipment->items->count()}} Item(s)
                                         </div>
-                                        <div class="row text-dark text-center">
-                                           <i class="fas fa-plane-arrival mr-2"></i>
+                                        <div class="row text-dark text-center font-size-24">
+                                            <i class="fas fa-plane-arrival mr-2"></i>
                                             {{$shipment->destination_city}}, {{$shipment->destination_country}}
                                         </div>
-                                        <div class="row mt-4 mb-4 text-center">
-                                            <img src="{{$item->qrcode->qrcode_image}}" width="" alt="">
+                                        <div class="row mt-4 mb-4 text-center" style="width: 100%">
+                                            <img src="{{$item->qrcode->qrcode_image}}" width="100%" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -60,22 +62,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-header">
+                </div>
+                <div class="row">
+                    <div class="card" style="width:100%">
+                        <div class="card-header font-size-24">
                             Item qrcode
                         </div>
                         <div class="card-body">
                             <div class="row text-center">
-                                <div class="card">
-                                    <div class="card-header text-dark text-center">
+                                <div class="card" style="width: 100%">
+                                    <div class="card-header text-dark text-center font-size-24">
                                         {{$item->item_unit}} {{$item->item_name}}
                                     </div>
-                                    <div class="card-body text-center">
+                                    <div class="card-body text-center font-size-24">
                                         <div class="row text-dark">
                                             {{$company->company_name}}
                                         </div>
-                                        <div class="row mt-4 mb-4 text-center">
-                                            <img src="{{$item->qrcode->qrcode_image}}" width="" alt="">
+                                        <div class="row mt-4 mb-4 text-center" >
+                                            <img src="{{$item->qrcode->qrcode_image}}" width="100%" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -83,12 +87,12 @@
                             </div>
                         </div>
                     </div>
-
-
-                    @endforeach
                 </div>
+
+                @endforeach
+                {{-- </div> --}}
             </div>
-            <div class="col-md-4 col-lg-4"></div>
+            {{-- <div class="col-md-4 col-lg-4"></div> --}}
         </div>
 
     </div>

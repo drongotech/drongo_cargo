@@ -57,6 +57,7 @@ export default class Shipment {
         var form = {
             'company_token': window.company_token,
             'company_id': window.company_id,
+            'host_type': window.host_type,
             'customer_name': this.customer_name,
             'customer_phone': this.customer_telephone,
             'city_of_origin': this.origin_city,

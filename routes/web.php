@@ -38,6 +38,11 @@ Route::middleware('compweb')->group(function () {
         Route::get('/shipments/delivered', 'companies\CargoShipmentController@deliveredtShipmentsView');
         Route::get('/shipments/{id}/{tracking_number}', 'companies\CargoShipmentController@getShipmentDetails');
         Route::get('/shipments/view/{id}/{tracking_number}', 'companies\CargoShipmentController@viewShipmentDetails');
+        Route::get('/staff', 'companies\CompanyStaffController@openStaffIndexPage');
+        Route::post('/staff', 'companies\CompanyStaffController@addNewStaffToCompany');
+        Route::get('/staff/list', 'companies\CompanyStaffController@listStaffToCompany');
+        Route::get('/staff/{staff_id}', 'companies\CompanyStaffController@viewCompanyStaff');
+        Route::post('/staff/{permission_id}/{staff_id}', 'companies\CompanyStaffController@updateStaffPermission');
     });
 });
 Route::post('cargo/logout', 'companies\CargoCompanyController@logoutCompany')->name('cargologout');

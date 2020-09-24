@@ -151,6 +151,12 @@ class CargoCompanyController extends Controller
         return redirect::back()->withCookie(Cookie::forget('cc_cookie'));
     }
 
+    public function CargoCompaniesList()
+    {
+        $companies = CargoCompanyModel::get();
+        return $this->jsonRespnse(true, null, $companies);
+    }
+
     public function jsonRespnse($status, $errorMessage, $data = [])
     {
         return FacadesResponse::json([

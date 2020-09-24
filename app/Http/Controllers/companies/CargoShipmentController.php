@@ -216,6 +216,12 @@ class CargoShipmentController extends Controller
     public function getLatestItems(Request $request)
     {
         $company = $request->company;
+        $staff = $request->staff;
+        if ($staff != null) {
+            if (!$this->staffHasPermission($staff, 31))
+                return $this->jsonRespnse(false, 'Access denied: You do not have permission ');
+        }
+
         $one_day = Carbon::now()->subDay();
         $shipments = CargoShipmentModel::where([
             ["company_id", $company->id],
@@ -305,6 +311,8 @@ class CargoShipmentController extends Controller
             "item_unit" => "required|string|max:30",
             "item_cpm" => "required|numeric",
             "item_remarks" => "required|string|max:255",
+            "item_kgs" => "nullable|numeric",
+            'item_total' => 'required|integer|min:1',
             "item_supplier" => "required|string|max:255"
         ];
 
@@ -421,6 +429,31 @@ class CargoShipmentController extends Controller
             $shipments[$key]->status = $shipment->statusTrack($shipment->track_status);
         }
         return $this->jsonRespnse(true, null, $shipments);
+    }
+
+    public function staffHasPermission($staff, $permission_number)
+    {
+
+        switch ($permission_number) {
+            case 12:
+                return $staff->has_customer_write_perm;
+            case 13:
+                return $staff->has_customer_delete_perm;
+            case 21:
+                return $staff->has_supplier_read_perm;
+            case 22:
+                return $staff->has_supplier_write_perm;
+            case 23:
+                return $staff->has_supplier_delete_perm;
+            case 31:
+                return $staff->has_shipment_read_perm;
+            case 32:
+                return $staff->has_shipment_write_perm;
+            case 33:
+                return $staff->has_shipment_delete_perm;
+            default:
+                return false;
+        }
     }
 
     public function jsonRespnse($status, $errorMessage, $data = [])
