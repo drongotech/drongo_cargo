@@ -108,7 +108,7 @@ class CargoCompanyController extends Controller
             $saved = $request->company_profile->store('uploads/profile/' . $company->company_token, 'public');
             if ($saved) {
                 $company->update(['company_logo' => env('APP_URL') . 'storage/' . $saved]);
-                return Redirect::back()->with('success', 'succesfully updated profile ' . $saved);
+                return Redirect::back()->with('success', 'succesfully updated profile ');
             }
         } catch (\Throwable $th) {
             return Redirect::back()->withErrors(['errorMessage' => $th->getMessage()]);
