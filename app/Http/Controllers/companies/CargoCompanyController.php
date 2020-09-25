@@ -209,7 +209,7 @@ class CargoCompanyController extends Controller
             );
         }
 
-        return $this->jsonRespnse(true, null, $company[0]);
+        return $this->jsonRespnse(true, null, ['company' => $company[0]]);
     }
 
     public function logoutCompany(Request $request)
