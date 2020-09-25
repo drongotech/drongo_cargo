@@ -47,7 +47,7 @@
                         <th>Unit</th>
                         <th>Item</th>
                         <th>Quantity</th>
-                        <th>CPM</th>
+                        <th>CPM/KG</th>
                         <th>Supplier</th>
                         <th>Remarks</th>
                     </tr>
@@ -61,7 +61,7 @@
                         </td>
                         <td>{{$item->item_name}}</td>
                         <td>{{$item->item_quantity}}</td>
-                        <td>{{$item->item_cpm}}</td>
+                        <td>{{$item->item_cpm}}/{{$item->item_kgs}}</td>
                         <td>{{$item->item_supplier}}</td>
                         <td>{{$item->item_remarks}}</td>
                     </tr>

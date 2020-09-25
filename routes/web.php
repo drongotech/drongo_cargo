@@ -43,10 +43,15 @@ Route::middleware('compweb')->group(function () {
         Route::get('/staff/list', 'companies\CompanyStaffController@listStaffToCompany');
         Route::get('/staff/{staff_id}', 'companies\CompanyStaffController@viewCompanyStaff');
         Route::post('/staff/{permission_id}/{staff_id}', 'companies\CompanyStaffController@updateStaffPermission');
+        Route::get('/profile', 'companies\CargoCompanyController@openComanyProfile');
+        Route::post('/profile/image', 'companies\CargoCompanyController@updateCompanyProfileImage');
     });
 });
 Route::post('cargo/logout', 'companies\CargoCompanyController@logoutCompany')->name('cargologout');
 Route::post('/cargo/login', 'companies\CargoCompanyController@loginCompany')->name('login_company');
+Route::post('/cargo/register', 'companies\CargoCompanyController@registerCompany')->name('register_company');
 
 Route::get('/cargo/login', 'companies\CargoCompanyController@loginPage')->name('company_login');
+Route::get('/cargo/terms', 'companies\CargoCompanyController@termsAndConditions')->name('company_tac');
+Route::get('/cargo/register', 'companies\CargoCompanyController@registerPage')->name('register_company');
 Auth::routes();

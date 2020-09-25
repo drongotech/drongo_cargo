@@ -33,7 +33,7 @@
                 {{-- <div class="row"> --}}
                 @foreach ($items as $item)
 
-                <div class="row">
+                <div class="row" style="height: 750px">
                     <div class="card" style="width:100%">
                         <div class="card-header font-size-24">
                             Shipment qrcode
@@ -63,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="height: 750px">
                     <div class="card" style="width:100%">
                         <div class="card-header font-size-24">
                             Item qrcode

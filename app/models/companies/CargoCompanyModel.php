@@ -32,7 +32,7 @@ class CargoCompanyModel extends Model
 
     public $errorMessage = null;
 
-    protected $countries = [
+    public $countries = [
         "China",
         "United Arab Emirates"
     ];
@@ -55,6 +55,29 @@ class CargoCompanyModel extends Model
                 "company_listed" => true,
                 "company_pincode" => Crypt::encrypt($this->pincode),
                 "company_added_by" => $data["user_id"],
+
+            ]);
+        } catch (\Throwable $th) {
+            $this->errorMessage = $th->getMessage();
+            return false;
+        }
+    }
+
+    public function registerCompany($data)
+    {
+        try {
+            $company_token = hash('md5', time());
+            return $this->create([
+                "company_token"  => $company_token,
+                "company_name" => $data["company_name"],
+                "company_phone" => $data["company_phone"],
+                "company_email" => $data["company_email"],
+                "company_city" => $data["company_city"],
+                "company_country" => $data["company_country"],
+                "company_location" => $data["company_address"],
+                "company_listed" => true,
+                "company_pincode" => Crypt::encrypt($data['password']),
+                "company_added_by" => 0,
 
             ]);
         } catch (\Throwable $th) {

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response as FacadesResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class CargoCompanyController extends Controller
@@ -51,6 +52,72 @@ class CargoCompanyController extends Controller
             return redirect()->route('welcome');
         }
         return view('auth.comp_login');
+    }
+    public function registerPage(Request $request)
+    {
+        if ($request->cookie('cc_cookie') != null) {
+            // return 'not logged in';
+            return redirect()->route('welcome');
+        }
+        return view('auth.comp_register');
+    }
+    public function registerCompany(Request $request)
+    {
+        $rules = [
+            "company_name" => "required|string|max:75|min:15|unique:cargo_companies,company_name",
+            "company_phone" => "required|string|max:25|min:6|unique:cargo_companies,company_phone",
+            "company_email" => "required|email|max:75|min:3|unique:cargo_companies,company_email",
+            "company_city" => "required|string|min:3|max:75",
+            "company_country" => "required|integer|in:1,2",
+            "company_address" => "required|string|max:255",
+            "password" => "required|string|confirmed:max:255",
+        ];
+
+        $data = $request->validate($rules);
+
+        $CargoCompanyModel = new CargoCompanyModel();
+        $new_company = $CargoCompanyModel->registerCompany($data);
+        if ($new_company) {
+            $new_company->notify(new NewCargoCompanyNotification($new_company));
+            Cookie::queue('cc_cookie', $new_company->company_token, 60 * 24 * 365);
+            return redirect()->route('welcome');
+        }
+
+        return Redirect::back()->withErrors(['errorMessage' => 'Error: ' . $CargoCompanyModel->errorMessage]);
+    }
+
+    public function openComanyProfile(Request $request)
+    {
+        $company = $request->company;
+        if ($request->host_type == 2)
+            abort(403, 'Permission denied');
+
+        return view('cargo_companies.profile_page', compact('company'));
+    }
+    public function updateCompanyProfileImage(Request $request)
+    {
+        $company = $request->company;
+
+        $rules = [
+            "company_profile" => "required|file|mimes:jpg,png"
+        ];
+
+        $data = $request->validate($rules);
+
+        try {
+            $saved = $request->company_profile->store('uploads/profile/' . $company->company_token, 'public');
+            if ($saved) {
+                $company->update(['company_logo' => env('APP_URL') . 'storage/' . $saved]);
+                return Redirect::back()->with('success', 'succesfully updated profile ' . $saved);
+            }
+        } catch (\Throwable $th) {
+            return Redirect::back()->withErrors(['errorMessage' => $th->getMessage()]);
+        }
+    }
+
+    public function termsAndConditions(Request $request)
+    {
+        return view('layouts.tac_page');
     }
 
     //
@@ -153,7 +220,7 @@ class CargoCompanyController extends Controller
 
     public function CargoCompaniesList()
     {
-        $companies = CargoCompanyModel::get();
+        $companies = CargoCompanyModel::latest()->get();
         return $this->jsonRespnse(true, null, $companies);
     }
 

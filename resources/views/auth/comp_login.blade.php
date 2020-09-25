@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <div class="mt-5 text-center">
-                        <p>Don't have an account ? <a href="/cargo/signuprequest" class="font-weight-medium text-primary"> Request an account here </a> </p>
+                        <p>Don't have an account ? <a href="/cargo/register" class="font-weight-medium text-primary"> Register an account here </a> </p>
                         <p>© {{gmdate('Y', time())}} Crafted with <i class="mdi mdi-heart text-danger"></i> Drongo Technology</p>
                     </div>
 

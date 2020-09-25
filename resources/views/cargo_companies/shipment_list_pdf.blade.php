@@ -167,7 +167,7 @@
             </th>
             <th style="text-align: left; padding:10px;">
                 <div class="itemLable">
-                    CPM
+                    CPM/KG
                 </div>
 
             </th>
@@ -200,7 +200,7 @@
                     {{$item->item_quantity}}
                 </td>
                 <td style="text-align: left; padding:10px;border-bottom: thin solid grey">
-                    {{$item->item_cpm}}
+                    {{$item->item_cpm}}/{{$item->item_kgs}}
                 </td>
                 <td style="text-align: left; padding:10px;border-bottom: thin solid grey">
                     {{$item->item_supplier}}
