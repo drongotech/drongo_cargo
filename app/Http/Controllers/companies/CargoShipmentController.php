@@ -312,8 +312,9 @@ class CargoShipmentController extends Controller
             "item_cpm" => "required|numeric",
             "item_remarks" => "required|string|max:255",
             "item_kgs" => "nullable|numeric",
-            'item_total' => 'required|integer|min:1',
-            "item_supplier" => "required|string|max:255"
+            'package_number' => 'required|integer|min:1',
+            "item_supplier" => "required|string|max:255",
+            "item_receipt_number" => "required|string",
         ];
 
 

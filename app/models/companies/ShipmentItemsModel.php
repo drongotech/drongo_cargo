@@ -22,6 +22,7 @@ class ShipmentItemsModel extends Model
         "item_kgs",
         "item_total",
         "item_remarks",
+        "receipt_number",
     ];
 
     public $errorMessage;
@@ -40,7 +41,8 @@ class ShipmentItemsModel extends Model
                 "item_supplier" => $data["item_supplier"],
                 "item_remarks" => $data["item_remarks"],
                 "item_kgs" => isset($data['item_kgs']) ? $data["item_kgs"] : 0,
-                "item_total" => $data["item_total"]
+                "item_total" => $data["package_number"],
+                "receipt_number" => $data["item_receipt_number"]
 
             ]);
         } catch (\Throwable $th) {

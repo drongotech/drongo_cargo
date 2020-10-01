@@ -31785,7 +31785,9 @@ var Item = /*#__PURE__*/function () {
     this.item_kgs = null;
     this.item_total = 1; //unit wise total
 
-    this.item_item_total = 0; //items in each unit
+    this.package_number = 0; //items in each unit
+
+    this.item_receipt_number = null;
   }
 
   _createClass(Item, [{
@@ -31825,7 +31827,8 @@ var Item = /*#__PURE__*/function () {
         'item_unit': this.item_unit + '/' + this.item_total,
         'item_remarks': this.item_remarks,
         'item_kgs': this.item_item_total,
-        'item_total': this.item_item_total
+        'package_number': this.package_number,
+        'item_receipt_number': this.item_receipt_number
       };
     }
   }]);
