@@ -74,6 +74,23 @@ class CompanyStaffController extends Controller
         $staff = $staff[0];
         return view('cargo_companies.staff_info', compact('staff', 'company'));
     }
+    
+    public function deleteCompanyStaff(Request $request, $staff_id)
+    {
+        $company = $request->company;
+
+        $staff = CompanyStaffModel::where([
+            ['company_id', $company->id],
+            ['company_token', $company->company_token],
+            ['id', $staff_id]
+        ])->get();
+
+        abort_if($staff == null || $staff->count() <= 0, 404);
+        $staff = $staff[0];
+        $staff->delete();
+        return Redirect::back()->with('success', 'successfully delete staff '.$staff->staff_name);
+        // return view('cargo_companies.staff_info', compact('staff', 'company'));
+    }
     public function updateStaffPermission(Request $request, $permission_number, $staff_id)
     {
         $company = $request->company;

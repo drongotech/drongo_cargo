@@ -42,6 +42,7 @@ Route::middleware('compweb')->group(function () {
         Route::post('/staff', 'companies\CompanyStaffController@addNewStaffToCompany');
         Route::get('/staff/list', 'companies\CompanyStaffController@listStaffToCompany');
         Route::get('/staff/{staff_id}', 'companies\CompanyStaffController@viewCompanyStaff');
+        Route::get('/staff/delete/{staff_id}', 'companies\CompanyStaffController@deleteCompanyStaff');
         Route::post('/staff/{permission_id}/{staff_id}', 'companies\CompanyStaffController@updateStaffPermission');
         Route::get('/profile', 'companies\CargoCompanyController@openComanyProfile');
         Route::post('/profile/image', 'companies\CargoCompanyController@updateCompanyProfileImage');

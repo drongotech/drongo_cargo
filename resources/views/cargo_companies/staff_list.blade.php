@@ -11,7 +11,11 @@ Companies
 @section('content')
 <div class="row">
     <div class="col-md-10 col-lg-10">
-        
+        @if (Session::has('success'))
+            <div class="alert alert-danger">
+                {{Session::get('success')}}
+            </div>
+        @endif
         <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -29,6 +33,7 @@ Companies
                                                 <th>Email</th>
                                                 <th>phone</th>
                                                 <th>Is Active</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
 
@@ -54,6 +59,11 @@ Companies
                                                         
                                                         <i class="fas fa-times-circle"></i> not active
                                                     @endif
+                                                </td>
+                                                <td>
+                                                    <a href="/cargo/staff/delete/{{$staff->id}}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                             @endforeach

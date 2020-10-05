@@ -12,7 +12,7 @@ export default class Item {
         this.item_unit = 1;
         this.item_remarks = null;
         this.errorMessage = null;
-        this.item_kgs = null;
+        this.item_kgs = 0;
         this.item_total = 1; //unit wise total
         this.package_number = 0; //items in each unit
         this.item_receipt_number = null;
@@ -50,7 +50,7 @@ export default class Item {
             'item_supplier': this.item_supplier,
             'item_unit': this.item_unit + '/' + this.item_total,
             'item_remarks': this.item_remarks,
-            'item_kgs': this.item_item_total,
+            'item_kgs': this.item_kgs,
             'package_number': this.package_number,
             'item_receipt_number': this.item_receipt_number,
         };

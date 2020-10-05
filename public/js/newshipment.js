@@ -31782,7 +31782,7 @@ var Item = /*#__PURE__*/function () {
     this.item_unit = 1;
     this.item_remarks = null;
     this.errorMessage = null;
-    this.item_kgs = null;
+    this.item_kgs = 0;
     this.item_total = 1; //unit wise total
 
     this.package_number = 0; //items in each unit
@@ -31826,7 +31826,7 @@ var Item = /*#__PURE__*/function () {
         'item_supplier': this.item_supplier,
         'item_unit': this.item_unit + '/' + this.item_total,
         'item_remarks': this.item_remarks,
-        'item_kgs': this.item_item_total,
+        'item_kgs': this.item_kgs,
         'package_number': this.package_number,
         'item_receipt_number': this.item_receipt_number
       };
@@ -32098,7 +32098,7 @@ var app = new Vue({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/noorfarooqy/Sites/drongo_cargo_tracker/resources/js/cargo/newshipment.js */"./resources/js/cargo/newshipment.js");
+module.exports = __webpack_require__(/*! C:\Users\Amiin\Documents\Sites\drongo_cargo\resources\js\cargo\newshipment.js */"./resources/js/cargo/newshipment.js");
 
 
 /***/ })

@@ -65,10 +65,10 @@
                 <table class="table">
                     <thead class="bg-soft-primary text-dark">
                         <th> unit</th>
+                        <th> Packages </th>
                         <th> name</th>
                         <th> quantity</th>
                         <th> CPM/KG</th>
-                        <th>Total</th>
                         <th>Supplier</th>
                     </thead>
                     <tbody>
@@ -77,10 +77,10 @@
                                 <i class="fas fa-times-circle text-danger" @click.prevent="removeItem(item)"></i>
                                 <span v-text="item.item_unit+'/'+item.item_total"></span>
                             </td>
+                            <td v-text="item.item_item_total"></td>
                             <td v-text="item.item_name"></td>
                             <td v-text="item.item_quantity"></td>
                             <td v-text="item.item_cpm+'/'+item.item_kgs"></td>
-                            <td v-text="item.item_item_total"></td>
                             <td v-text="item.item_supplier"></td>
                         </tr>
                     </tbody>
